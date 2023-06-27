@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-organizations
+      author: Ivan
+      changes:
+        # Генерация 50 организаций
+        - sql:
+            sql: |
+              INSERT INTO organization (id, full_name, short_name, inn, ogrn, postal_address, legal_address, ceo_last_name, ceo_first_name, ceo_middle_name, ceo_date_of_birth)
+              SELECT
+                generate_series,
+                'Full Name ' || generate_series,
+                'Short Name ' || generate_series,
+                1000000000 + generate_series,
+                2000000000 + generate_series,
+                'Postal Address ' || generate_series,
+                'Legal Address ' || generate_series,
+                'CEO Last Name ' || generate_series,
+                'CEO First Name ' || generate_series,
+                'CEO Middle Name ' || generate_series,
+                '1970-01-01'::date + generate_series * '1 day'::interval
+              FROM generate_series(1, 50);
+
+              INSERT INTO director (organization_id, last_name, first_name, middle_name, date_of_birth)
+              SELECT
+                generate_series,
+                'Director Last Name ' || generate_series,
+                'Director First Name ' || generate_series,
+                'Director Middle Name ' || generate_series,
+                '1970-01-01'::date + generate_series * '1 day'::interval
+              FROM generate_series(1, 50);
+
+              INSERT INTO branch (organization_id, name, postal_address, director_last_name, director_first_name, director_middle_name, director_date_of_birth)
+              SELECT
+                generate_series,
+                'Branch Name ' || generate_series,
+                'Branch Postal Address ' || generate_series,
+                'Branch Director Last Name ' || generate_series,
+                'Branch Director First Name ' || generate_series,
+                'Branch Director Middle Name ' || generate_series,
+                '1970-01-01'::date + generate_series * '1 day'::interval
+              FROM generate_series(1, 50)
